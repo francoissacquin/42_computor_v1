@@ -1,0 +1,20 @@
+equation = polynomial EQUAL polynomial ;
+
+polynomial = term | term , { SIGN , term} ; 
+
+term = coefficient
+		| [ coefficient ] , VARIABLE
+		| [ coefficient ] , VARIABLE , exponent ;
+
+coefficient = NAT ;
+
+exponent = "^" , NAT;
+
+SIGN = "+" | "-" ;
+
+VARIABLE = "X" ;
+
+NAT = DIGIT | NON_ZERO , DIGITS ;
+DIGITS = DIGIT | DIGIT , DIGITS ;
+DIGIT = "0" | NON_ZERO ;
+NON_ZERO = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
