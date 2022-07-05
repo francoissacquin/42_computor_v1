@@ -1,7 +1,6 @@
 NAME = computor
 
 CC = c++
-DEBUG_FLAG = -g -Wfatal-errors -Wpedantic -Wconversion -Wshadow
 CC_FLAGS = -Wall -Wextra -Werror
 
 

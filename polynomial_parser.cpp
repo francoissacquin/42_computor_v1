@@ -1,49 +1,104 @@
 #include "polynomial_parser.hpp"
+#include "computor.h"
+#include <string>
 
-t_poly_list *		parse_input_equation(char *str, int eq_side)
+Polynomial_parser::Polynomial_parser(std::string str, int eq_side): raw_eq(str), curr_pos(0), eq_side(eq_side)
 {
-	t_poly_list			*start = NULL;
-	t_poly_list			*temp = NULL;
-	t_parsing			info;
+	// nothing to see here
+}
 
-	info.curr_pos = &(str[0]);
-	info.eq_side = eq_side;
+Polynomial_parser::~Polynomial_parser() {}
 
-	while (pos != str.end())
+void		Polynomial_parser::skip_spaces()
+{
+	while (isspace(this->raw_eq[this->curr_pos]))
+		this->curr_pos++;
+}
+
+int			Polynomial_parser::accept_number()
+{
+	int		num;
+	char *	end;
+
+	num = strtol(this->curr_pos, &end, 10);
+	// definitivement faire mon propre atoi je pense
+	if (this->curr_pos == end)
+		num = 1;
+	this->curr_pos = end;
+
+	return num;
+}
+
+int			Polynomial_parser::accept_sign()
+{
+	int		sign;
+
+	sign = this->eq_side; 
+	// default value is 1 for left side of equation and -1 for right side
+
+	skip_spaces();
+
+	if (this->raw_eq[this->curr_pos] == '-')
 	{
-		if (temp == NULL)
+		sign *= -1;
+		this->curr_pos++;
+	}
+	else if (this->raw_eq[this->curr_pos] == '+')
+		this->curr_pos++;
+	
+	return (sign);
+}
+
+int			Polynomial_parser::accept_new_exponent()
+{
+	int		expo = 0; // default exponent is 0
+
+	skip_spaces();
+
+	if (this->raw_eq[this->curr_pos] == 'X')
+	{
+		expo = 1;
+		this->curr_pos++;
+		if (this->raw_eq[this->curr_pos] == '^')
 		{
-			temp = accept_new_term(&info);
-			start = temp;
-		}
-		else
-		{
-			temp->next = accept_new_term(&info);
-			temp = temp->next;
+			this->curr_pos++;
+			expo = accept_number();
 		}
 	}
-	return (start);
+	else if (this->raw_eq[this->curr_pos] == '*')
+	{
+		skip_spaces();
+		if (this->raw_eq[this->curr_pos] == 'X')
+		{
+			expo = 1;
+			this->curr_pos++;
+			if (this->raw_eq[this->curr_pos] == '^')
+			{
+				this->curr_pos++;
+				expo = accept_number();
+			}
+		}
+	}
+	return (expo);
 }
 
-t_poly_list *		accept_new_term(t_parsing *info)
+int			Polynomial_parser::accept_new_coefficient()
 {
-	t_poly_list *	new_term;
-	int				coef;
-	int				expo;
+	int		coef;
+	int		sign;
 
-	coef = accept_new_coefficient(info);
-	expo = accept_new_exponent(info);
-	new_term = create_new_link(coef, expo);
+	sign = accept_sign();
+	coef = accept_number();
 
-	return (new_term);
+	return (coef * sign);
 }
 
-t_poly_list *		create_new_link(int coef, int exponent)
+t_poly_list *		Polynomial_parser::create_new_link(int coef, int expo)
 {
 	t_poly_list *	new_link;
 
-	if (!(new_link = malloc(sizeof(t_poly_list))))
-		error_list(3);
+	if (!(new_link = (t_poly_list *)malloc(sizeof(t_poly_list))))
+		error_exit(3);
 	new_link->c = coef;
 	new_link->e = expo;
 	new_link->next = NULL;
@@ -51,72 +106,37 @@ t_poly_list *		create_new_link(int coef, int exponent)
 	return (new_link);
 }
 
-int			accept_new_coefficient(t_parsing *info)
+t_poly_list *		Polynomial_parser::accept_new_term()
 {
-	int		coef;
-	int		sign;
+	t_poly_list *	new_term;
+	int				coef;
+	int				expo;
 
-	sign = accept_sign(info);
-	c = accept_number(info);
+	coef = accept_new_coefficient();
+	expo = accept_new_exponent();
+	new_term = create_new_link(coef, expo);
 
-	return (c * sign);
+	return (new_term);
 }
 
-int			accept_new_exponent(t_parsing *info)
+t_poly_list *		Polynomial_parser::parse_input_equation()
 {
-	int		expo = 0; // default exponent is 0
+	t_poly_list			*start = NULL;
+	t_poly_list			*temp = NULL;
+	t_parsing			info;
 
-	skip_spaces(info);
-
-	if (*(info->curr_pos) == 'X')
+	while (this->raw_eq[this->curr_pos])
 	{
-		e = 1;
-		info->curr_pos++;
-		if (*(info->curr_pos) == '^')
+		if (temp == NULL)
 		{
-			info->curr_pos++;
-			e = accept_number(info);
+			temp = accept_new_term();
+			start = temp;
+		}
+		else
+		{
+			temp->next = accept_new_term();
+			temp = temp->next;
 		}
 	}
-	return (e);
-}
-
-int			accept_sign(t_parsing *info)
-{
-	int		sign;
-
-	sign = info->eq_side; 
-	// default value is 1 for left side of equation and -1 for right side
-
-	skip_spaces(info);
-
-	if (*(info->curr_pos) == '-')
-	{
-		sign *= -1;
-		info->curr_pos++;
-	}
-	else if (*(info->curr_pos) == '+')
-		info->curr_pos++;
-	
-	return (sign);
-}
-
-int			accept_number(t_parsing *info)
-{
-	int		num;
-	char *	end;
-
-	num = strtol(info->curr_pos, &end, 10);
-	if (info->curr_pos == end)
-		num = 1;
-
-	info->curr_pos = end;
-
-	return num;
-}
-
-void		skip_spaces(t_parsing *info)
-{
-	while (isspace(*(info->curr_pos)))
-		info->curr_pos++;
+	return (start);
 }
