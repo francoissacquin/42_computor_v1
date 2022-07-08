@@ -1,6 +1,8 @@
 #ifndef POLYNOMIAL_PARSER
 #define POLYNOMIAL_PARSER
 
+#include <string>
+
 typedef struct s_poly_list
 {
 	int		c; //coefficient

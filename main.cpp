@@ -1,7 +1,5 @@
-#include "input_char_check.cpp"
-#include "polynomial_parser.cpp"
+#include "computor.h"
 #include <string>
-#include <iostream>
 
 void		error_exit(int code)
 {
@@ -46,13 +44,13 @@ void		print_linked_list(t_poly_list * list)
 
 int			main(int argc, char **argv)
 {
-	std::string		raw_eq(argv[1]);
 	int				err;
 	t_poly_list		*temp;
 
 
 	if (argc != 2)
 		error_exit(1);
+	std::string		raw_eq(argv[1]);
 	if ((err = input_char_check(raw_eq)) != 0)
 		error_exit(err);
 	temp = equation_slicing(raw_eq);

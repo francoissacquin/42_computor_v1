@@ -2,7 +2,7 @@
 
 int		input_char_check(std::string str)
 {
-	std::string	authorized_chars = "1234567890+-*X^=";
+	std::string	authorized_chars = "1234567890+-*X^= ";
 	int			len = str.size();
 	int			equal_count = 0;
 

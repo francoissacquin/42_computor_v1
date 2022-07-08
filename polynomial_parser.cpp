@@ -1,6 +1,6 @@
 #include "polynomial_parser.hpp"
 #include "computor.h"
-#include <string>
+#include <cstdlib>
 
 Polynomial_parser::Polynomial_parser(std::string str, int eq_side): raw_eq(str), curr_pos(0), eq_side(eq_side)
 {
@@ -20,11 +20,11 @@ int			Polynomial_parser::accept_number()
 	int		num;
 	char *	end;
 
-	num = strtol(this->curr_pos, &end, 10);
-	// definitivement faire mon propre atoi je pense
-	if (this->curr_pos == end)
+	num = strtol(&(this->raw_eq[this->curr_pos]), &end, 10);
+	if (&(this->raw_eq[this->curr_pos]) == end)
 		num = 1;
-	this->curr_pos = end;
+	while (&(this->raw_eq[this->curr_pos]) != end)
+		this->curr_pos++;
 
 	return num;
 }
@@ -33,7 +33,7 @@ int			Polynomial_parser::accept_sign()
 {
 	int		sign;
 
-	sign = this->eq_side; 
+	sign = this->eq_side;
 	// default value is 1 for left side of equation and -1 for right side
 
 	skip_spaces();
@@ -67,6 +67,7 @@ int			Polynomial_parser::accept_new_exponent()
 	}
 	else if (this->raw_eq[this->curr_pos] == '*')
 	{
+		this->curr_pos++;
 		skip_spaces();
 		if (this->raw_eq[this->curr_pos] == 'X')
 		{
@@ -75,7 +76,9 @@ int			Polynomial_parser::accept_new_exponent()
 			if (this->raw_eq[this->curr_pos] == '^')
 			{
 				this->curr_pos++;
+				std::cout << "curr = " << curr_pos << "\n";
 				expo = accept_number();
+				std::cout << "curr = " << curr_pos << "\n";
 			}
 		}
 	}
@@ -123,10 +126,11 @@ t_poly_list *		Polynomial_parser::parse_input_equation()
 {
 	t_poly_list			*start = NULL;
 	t_poly_list			*temp = NULL;
-	t_parsing			info;
+	int		i = 0;
 
-	while (this->raw_eq[this->curr_pos])
+	while (this->raw_eq[this->curr_pos] && i < 10)
 	{
+		std::cout << "cool\n";
 		if (temp == NULL)
 		{
 			temp = accept_new_term();
@@ -137,6 +141,7 @@ t_poly_list *		Polynomial_parser::parse_input_equation()
 			temp->next = accept_new_term();
 			temp = temp->next;
 		}
+		i++;
 	}
 	return (start);
 }
