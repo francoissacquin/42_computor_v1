@@ -1,8 +1,9 @@
 #include "polynomial_parser.hpp"
-#include "computor.h"
+#include "../includes/computor.h"
 #include <cstdlib>
+#include "computor.h"
 
-Polynomial_parser::Polynomial_parser(std::string str, int eq_side): raw_eq(str), curr_pos(0), eq_side(eq_side)
+Polynomial_parser::Polynomial_parser(std::string str, int eq_side): raw_eq(str), curr_pos(0), eq_side(eq_side), error_level(0)
 {
 	// nothing to see here
 }
@@ -21,6 +22,8 @@ int			Polynomial_parser::accept_number()
 	char *	end;
 
 	num = strtol(&(this->raw_eq[this->curr_pos]), &end, 10);
+	if (num < 0)
+		this->error_level = 6;
 	if (&(this->raw_eq[this->curr_pos]) == end)
 		num = 1;
 	while (&(this->raw_eq[this->curr_pos]) != end)
@@ -76,9 +79,7 @@ int			Polynomial_parser::accept_new_exponent()
 			if (this->raw_eq[this->curr_pos] == '^')
 			{
 				this->curr_pos++;
-				std::cout << "curr = " << curr_pos << "\n";
 				expo = accept_number();
-				std::cout << "curr = " << curr_pos << "\n";
 			}
 		}
 	}
@@ -101,7 +102,10 @@ t_poly_list *		Polynomial_parser::create_new_link(int coef, int expo)
 	t_poly_list *	new_link;
 
 	if (!(new_link = (t_poly_list *)malloc(sizeof(t_poly_list))))
-		error_exit(3);
+	{
+		this->error_level = 8;
+		return (NULL);
+	}
 	new_link->c = coef;
 	new_link->e = expo;
 	new_link->next = NULL;
@@ -126,11 +130,9 @@ t_poly_list *		Polynomial_parser::parse_input_equation()
 {
 	t_poly_list			*start = NULL;
 	t_poly_list			*temp = NULL;
-	int		i = 0;
 
-	while (this->raw_eq[this->curr_pos] && i < 10)
+	while (this->raw_eq[this->curr_pos])
 	{
-		std::cout << "cool\n";
 		if (temp == NULL)
 		{
 			temp = accept_new_term();
@@ -141,7 +143,8 @@ t_poly_list *		Polynomial_parser::parse_input_equation()
 			temp->next = accept_new_term();
 			temp = temp->next;
 		}
-		i++;
+		if (this->error_level != 0)
+			error_exit(this->error_level, start);
 	}
 	return (start);
 }

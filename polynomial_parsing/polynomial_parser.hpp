@@ -23,6 +23,7 @@ private:
 	std::string			raw_eq;
 	int					curr_pos;
 	int					eq_side;
+	int					error_level;
 
 public:
 	Polynomial_parser(std::string str, int eq_side);

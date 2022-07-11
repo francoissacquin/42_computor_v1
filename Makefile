@@ -5,14 +5,15 @@ CC_FLAGS = -Wall -Wextra -Werror
 
 
 SRCS =	main.cpp \
-		input_char_check.cpp \
-		polynomial_parser.cpp
+		polynomial_parsing/input_char_check.cpp \
+		polynomial_parsing/polynomial_parser.cpp \
+		polynomial_solver/polynomial_solver.cpp
 
 
 OBJS = $(SRCS:%.cpp=$(OBJS_DIR)/%.o)
 OBJS_DIR = ./objs
 DEP = $(OBJS:%.o=%.d)
-HEADER = -I .
+HEADER = -I ./includes/
 
 all				: 	${NAME}
 $(NAME) 		: 	$(OBJS)	

@@ -1,7 +1,25 @@
-#include "computor.h"
+#include "includes/computor.h"
 #include <string>
 
-void		error_exit(int code)
+void		free_poly_list(t_poly_list * temp)
+{
+	t_poly_list	*del;
+	if (temp == NULL)
+		return ;
+	if (temp && temp->next == NULL)
+		free(temp);
+	else
+	{
+		while (temp)
+		{
+			del = temp;
+			temp = temp->next;
+			free(del);
+		}
+	}
+}
+
+void		error_exit(int code, t_poly_list *temp)
 {
 	if (code == 1)
 		std::cerr << "Wrong number of arguments, please use the executable as :\n>./computor \"[equation]\"\n";
@@ -10,14 +28,27 @@ void		error_exit(int code)
 	else if (code == 3)
 		std::cerr << "Equation not valid\nThe equation should have one and only equal sign\n";
 	else if (code == 4)
-		std::cerr << "Equation not valid\nThe equation should have one and only equal sign\n";
+		std::cerr << "Equation not valid\nOne side of the equation is not parsable\n";
+	else if (code == 5)
+		std::cerr << "Equation not valid\nNot enough elements\n";
+	else if (code == 6)
+		std::cerr << "Equation not valid\nNumber cannot be contained in an int\n";
+	else if (code == 7)
+		std::cout << "The polynomial degree is strictly greater than 2. I can't solve it\n";
+	else if (code == 8)
+		std::cerr << "Malloc Failed\nABORTING PROGRAM\n";
+	else if (code == 9)
+		std::cerr << "Equation has no variable, it is either true or false but cannot resolved in terms of X\n";
+	free_poly_list(temp);
 	exit(1);
 }
 
 t_poly_list *		equation_slicing(std::string str)
 {
-	Polynomial_parser		right_side(str.substr(0, str.find("=")), 1);
-	Polynomial_parser		left_side(str.substr(str.find("=") + 1), -1);
+	std::string				raw_left_side = str.substr(0, str.find("="));
+	std::string				raw_right_side = str.substr(str.find("=") + 1);
+	Polynomial_parser		left_side(cut_spaces_on_edges(raw_left_side), 1);
+	Polynomial_parser		right_side(cut_spaces_on_edges(raw_right_side), -1);
 	t_poly_list *	left_parsed_terms;
 	t_poly_list *	right_parsed_terms;
 	t_poly_list *	temp;
@@ -31,6 +62,23 @@ t_poly_list *		equation_slicing(std::string str)
 		temp = temp->next;
 	temp->next = right_parsed_terms;
 	return (left_parsed_terms);
+}
+
+int			equation_solver(t_poly_list * eq)
+{
+	Polynomial_solver		resolver(eq);
+
+	resolver.print_reduced_form();
+	resolver.print_polynomial_degree();
+	if (resolver.get_degree() > 2)
+		return (7);
+	else if (resolver.get_degree() == 0)
+	{
+		resolver.resolve_degree_0();
+		return (0);
+	}
+	resolver.calc_discriminant();
+	return (0);
 }
 
 void		print_linked_list(t_poly_list * list)
@@ -49,12 +97,17 @@ int			main(int argc, char **argv)
 
 
 	if (argc != 2)
-		error_exit(1);
+		error_exit(1, NULL);
 	std::string		raw_eq(argv[1]);
 	if ((err = input_char_check(raw_eq)) != 0)
-		error_exit(err);
+		error_exit(err, NULL);
 	temp = equation_slicing(raw_eq);
 	if (temp == NULL)
-		error_exit(4);
+		error_exit(4, temp);
 	print_linked_list(temp);
+	if ((err = equation_solver(temp)) > 0)
+		error_exit(err, temp);
+
+	free_poly_list(temp);
+	return (0);
 }
