@@ -22,6 +22,8 @@ public:
 	void	print_polynomial_degree();
 	void	find_solutions();
 	void	resolve_degree_0();
+	void	resolve_degree_1();
+	void	reduce_fraction(long a, long b);
 };
 
 #endif

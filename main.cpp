@@ -77,7 +77,13 @@ int			equation_solver(t_poly_list * eq)
 		resolver.resolve_degree_0();
 		return (0);
 	}
+	else if (resolver.get_degree() == 1)
+	{
+		resolver.resolve_degree_1();
+		return (0);
+	}
 	resolver.calc_discriminant();
+	resolver.find_solutions();
 	return (0);
 }
 
@@ -107,7 +113,6 @@ int			main(int argc, char **argv)
 	print_linked_list(temp);
 	if ((err = equation_solver(temp)) > 0)
 		error_exit(err, temp);
-
 	free_poly_list(temp);
 	return (0);
 }

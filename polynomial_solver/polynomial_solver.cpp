@@ -59,9 +59,9 @@ void		Polynomial_solver::print_reduced_form()
 				std::cout << " - ";
 			else
 				std::cout << "-";
-			if (abs(itr->second) != 1 || itr->first == 0)
+			if (std::abs(itr->second) != 1 || itr->first == 0)
 			{
-				std::cout << abs(itr->second);
+				std::cout << std::abs(itr->second);
 				if (itr->first == 1)
 					std::cout << " * X";
 				else if (itr->first > 1)
@@ -80,9 +80,9 @@ void		Polynomial_solver::print_reduced_form()
 		{
 			if (printed != 0)
 				std::cout << " + ";
-			if (abs(itr->second) != 1 || itr->first == 0)
+			if (std::abs(itr->second) != 1 || itr->first == 0)
 			{
-				std::cout << abs(itr->second);
+				std::cout << std::abs(itr->second);
 				if (itr->first == 1)
 					std::cout << " * X";
 				else if (itr->first > 1)
@@ -126,4 +126,57 @@ void		Polynomial_solver::resolve_degree_0()
 		std::cout << "The equation accepts an infinity of solutions\n";
 	else
 		std::cout << "The equation has no possible solution\n";
+}
+
+void		Polynomial_solver::resolve_degree_1()
+{
+	long		a = this->poly_factors.find(0)->second * -1;
+	long		b = this->poly_factors.find(1)->second;
+
+	if (a % b != 0)
+	{
+		reduce_fraction(a, b);
+		std::cout << "The solution is: " << (double)a / (double)b << std::endl;
+	}
+	else
+		std::cout << "The solution is: " << a / b << std::endl;
+}
+
+void		Polynomial_solver::reduce_fraction(long a, long b)
+{
+	// We are using an euclidian division here to find the GCD
+	long		temp_a;
+	long		temp_b;
+	if (std::abs(a) > std::abs(b))
+	{
+		temp_a = std::abs(a);
+		temp_b = std::abs(b);
+	}
+	else
+	{
+		temp_a = std::abs(b);
+		temp_b = std::abs(a);
+	}
+	long		dividend = a / b;
+	long		remainder = a % b;
+
+	while (remainder != 0)
+	{
+		temp_a = b;
+		temp_b = remainder;
+		dividend = temp_a / temp_b;
+		remainder = temp_a % temp_b;
+	}
+	std::cout << "Irreducible Fraction form for solution is: " << a / temp_b << " / " << b / temp_b << std::endl;
+}
+
+void		Polynomial_solver::find_solutions()
+{
+	if (this->discriminant < 0)
+	{
+		std::cout << "Discriminant is negative, the equation has no real solutions but two complex solutions:" << std::endl;
+		std::cout << "" << std::endl;
+		std::cout << "" << std::endl; // on peut tenter d'afficher les fractions
+		std::cout << "" << std::endl;
+	}
 }
