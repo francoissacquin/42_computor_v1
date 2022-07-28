@@ -3,6 +3,8 @@
 
 #include "../includes/computor.h"
 #include <map>
+#include <iomanip>
+#include <tgmath.h>
 
 class Polynomial_solver
 {
@@ -24,6 +26,8 @@ public:
 	void	resolve_degree_0();
 	void	resolve_degree_1();
 	void	reduce_fraction(long a, long b);
+	std::string		center_int_for_print(int a, unsigned long len);
+	std::string		center_double_for_print(double a, unsigned long len);
 };
 
 #endif

@@ -110,7 +110,6 @@ int			main(int argc, char **argv)
 	temp = equation_slicing(raw_eq);
 	if (temp == NULL)
 		error_exit(4, temp);
-	print_linked_list(temp);
 	if ((err = equation_solver(temp)) > 0)
 		error_exit(err, temp);
 	free_poly_list(temp);

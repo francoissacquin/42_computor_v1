@@ -170,13 +170,102 @@ void		Polynomial_solver::reduce_fraction(long a, long b)
 	std::cout << "Irreducible Fraction form for solution is: " << a / temp_b << " / " << b / temp_b << std::endl;
 }
 
+std::string		Polynomial_solver::center_int_for_print(int a, unsigned long len)
+{
+	std::string		content = std::to_string(a);
+	int				padding;
+	if (content.size() < len)
+		padding = len - content.size();
+	else
+		padding = 0;
+	std::string		res(padding / 2 + padding % 2, ' ');
+
+	res.insert(res.size(), content);
+	res.insert(res.size(), padding / 2, ' ');
+
+	return res;
+}
+
+std::string		Polynomial_solver::center_double_for_print(double a, unsigned long len)
+{
+	std::string		content = std::to_string(a);
+	int				padding;
+	if (content.size() < len)
+		padding = len - content.size();
+	else
+		padding = 0;
+	std::string		res(padding / 2 + padding % 2, ' ');
+
+	res.insert(res.size(), content);
+	res.insert(res.size(), padding / 2, ' ');
+
+	return res;
+}
+
 void		Polynomial_solver::find_solutions()
 {
 	if (this->discriminant < 0)
 	{
 		std::cout << "Discriminant is negative, the equation has no real solutions but two complex solutions:" << std::endl;
-		std::cout << "" << std::endl;
-		std::cout << "" << std::endl; // on peut tenter d'afficher les fractions
-		std::cout << "" << std::endl;
+		std::cout << "FORMULAS:" << std::endl;
+		std::cout << "            ___                          ___" << std::endl;
+		std::cout << " - b + i * √ Δ                - b - i * √ Δ " << std::endl;
+		std::cout << "________________     AND     ________________" << std::endl;
+		std::cout << "                                             " << std::endl;
+		std::cout << "      2 * a                         2 * a    " << std::endl << std::endl;
+
+		std::cout << "SOLUTIONS:" << std::endl;
+		std::cout << "             _____                          _____" << std::endl;
+		std::cout << this->center_int_for_print( -1 * this->poly_factors.find(1)->second, 10) << " + i * √" << this->center_int_for_print(this->discriminant, 10) << "               " << this->center_int_for_print( -1 * this->poly_factors.find(1)->second, 10) << " - i * √" << this->center_int_for_print(this->discriminant, 10) << std::endl;
+		std::cout << "_________________________      AND      _________________________" << std::endl;
+		std::cout << std::endl;
+		std::cout << this->center_int_for_print( 2 * this->poly_factors.find(0)->second, 25) << "               " << this->center_int_for_print( 2 * this->poly_factors.find(0)->second, 25) << std::endl;
+		std::cout << std::endl;
 	}
+	else if (this->discriminant == 0)
+	{
+		std::cout << "Discriminant is equal to zero, the equation has one solution:" << std::endl;
+		std::cout << std::endl;
+		std::cout << "             - b                       " << this->center_int_for_print( -1 * this->poly_factors.find(1)->second, 10) << std::endl;
+		std::cout << "FORMULA:  __________        SOLUTION:  __________  =  "<< (-1 * this->poly_factors.find(1)->second) / (2 * this->poly_factors.find(0)->second) << std::endl;
+		std::cout << std::endl;
+		std::cout << "            2 * a                      " << this->center_int_for_print( 2 * this->poly_factors.find(0)->second, 10) << std::endl;
+	}
+	else
+	{
+		std::cout << "Discriminant is positive, the equation has two real solutions:" << std::endl;
+		std::cout << "FORMULAS:" << std::endl;
+		std::cout << "        ___                      ___" << std::endl;
+		std::cout << " - b + √ Δ                - b - √ Δ " << std::endl;
+		std::cout << "____________     AND     ____________" << std::endl;
+		std::cout << "                                             " << std::endl;
+		std::cout << "   2 * a                     2 * a    " << std::endl << std::endl;
+
+		double		temp = (double)(-1 * (double)this->poly_factors.find(1)->second + (double)sqrt((double)this->discriminant)) / (double)(2 * (double)this->poly_factors.find(2)->second);
+		double		temp_2 = (double)(-1 * (double)this->poly_factors.find(1)->second - (double)sqrt((double)this->discriminant)) / (double)(2 * (double)this->poly_factors.find(2)->second);
+
+		//std::cout << (-1 * (double)this->poly_factors.find(1)->second + sqrt((double)this->discriminant)) / (double)(2 * this->poly_factors.find(2)->second) << std::endl << std::endl;
+
+		std::cout << "SOLUTIONS:" << std::endl;
+		std::cout << "              ___________                                         ___________" << std::endl;
+		std::cout << this->center_int_for_print( -1 * this->poly_factors.find(1)->second, 10) << " + √" << this->center_int_for_print(this->discriminant, 10) << "                            " << this->center_int_for_print( -1 * this->poly_factors.find(1)->second, 10) << " - √" << this->center_int_for_print(this->discriminant, 10) << std::endl;
+		std::cout << "_________________________ = " << this->center_double_for_print(temp, 10) << "    AND     _________________________ = " << this->center_double_for_print(temp_2, 10) << std::endl;
+		std::cout << std::endl;
+		std::cout << this->center_int_for_print( 2 * this->poly_factors.find(0)->second, 23) << "                           " << this->center_int_for_print( 2 * this->poly_factors.find(0)->second, 23) << std::endl;
+		std::cout << std::endl;
+	}
+}
+
+
+
+
+int		num_of_digits(char *str)
+{
+	int		res = 0;
+	for(int i = 0; str[i];i++)
+	{
+		if (str[i] > 47 && str[i] < 58)
+			res++;
+	}
+	return (res);
 }
