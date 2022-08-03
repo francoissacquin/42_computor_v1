@@ -1,4 +1,5 @@
 #include "polynomial_solver.hpp"
+#include "square_root.cpp"
 
 Polynomial_solver::Polynomial_solver(t_poly_list *parsed_eq)
 {
@@ -215,11 +216,11 @@ void		Polynomial_solver::find_solutions()
 		std::cout << "      2 * a                         2 * a    " << std::endl << std::endl;
 
 		std::cout << "SOLUTIONS:" << std::endl;
-		std::cout << "             _____                          _____" << std::endl;
-		std::cout << this->center_int_for_print( -1 * this->poly_factors.find(1)->second, 10) << " + i * √" << this->center_int_for_print(this->discriminant, 10) << "               " << this->center_int_for_print( -1 * this->poly_factors.find(1)->second, 10) << " - i * √" << this->center_int_for_print(this->discriminant, 10) << std::endl;
-		std::cout << "_________________________      AND      _________________________" << std::endl;
+		std::cout << "                  ___________                                            ___________" << std::endl;
+		std::cout << this->center_int_for_print( -1 * this->poly_factors.find(1)->second, 10) << " + i * √" << this->center_int_for_print(this->discriminant, 10) << "                          " << this->center_int_for_print( -1 * this->poly_factors.find(1)->second, 10) << " -  i * √" << this->center_int_for_print(this->discriminant, 10) << std::endl;
+		std::cout << "____________________________            AND          ____________________________" << std::endl;
 		std::cout << std::endl;
-		std::cout << this->center_int_for_print( 2 * this->poly_factors.find(0)->second, 25) << "               " << this->center_int_for_print( 2 * this->poly_factors.find(0)->second, 25) << std::endl;
+		std::cout << this->center_int_for_print( 2 * this->poly_factors.find(2)->second, 23) << "                           " << this->center_int_for_print( 2 * this->poly_factors.find(2)->second, 23) << std::endl;
 		std::cout << std::endl;
 	}
 	else if (this->discriminant == 0)
@@ -241,22 +242,18 @@ void		Polynomial_solver::find_solutions()
 		std::cout << "                                             " << std::endl;
 		std::cout << "   2 * a                     2 * a    " << std::endl << std::endl;
 
-		double		temp = (double)(-1 * (double)this->poly_factors.find(1)->second + (double)sqrt((double)this->discriminant)) / (double)(2 * (double)this->poly_factors.find(2)->second);
-		double		temp_2 = (double)(-1 * (double)this->poly_factors.find(1)->second - (double)sqrt((double)this->discriminant)) / (double)(2 * (double)this->poly_factors.find(2)->second);
-
-		//std::cout << (-1 * (double)this->poly_factors.find(1)->second + sqrt((double)this->discriminant)) / (double)(2 * this->poly_factors.find(2)->second) << std::endl << std::endl;
+		double		temp = (double)(-1 * (double)this->poly_factors.find(1)->second + (double)square_root((double)this->discriminant)) / (double)(2 * (double)this->poly_factors.find(2)->second);
+		double		temp_2 = (double)(-1 * (double)this->poly_factors.find(1)->second - (double)square_root((double)this->discriminant)) / (double)(2 * (double)this->poly_factors.find(2)->second);
 
 		std::cout << "SOLUTIONS:" << std::endl;
 		std::cout << "              ___________                                         ___________" << std::endl;
 		std::cout << this->center_int_for_print( -1 * this->poly_factors.find(1)->second, 10) << " + √" << this->center_int_for_print(this->discriminant, 10) << "                            " << this->center_int_for_print( -1 * this->poly_factors.find(1)->second, 10) << " - √" << this->center_int_for_print(this->discriminant, 10) << std::endl;
 		std::cout << "_________________________ = " << this->center_double_for_print(temp, 10) << "    AND     _________________________ = " << this->center_double_for_print(temp_2, 10) << std::endl;
 		std::cout << std::endl;
-		std::cout << this->center_int_for_print( 2 * this->poly_factors.find(0)->second, 23) << "                           " << this->center_int_for_print( 2 * this->poly_factors.find(0)->second, 23) << std::endl;
+		std::cout << this->center_int_for_print( 2 * this->poly_factors.find(2)->second, 23) << "                           " << this->center_int_for_print( 2 * this->poly_factors.find(2)->second, 23) << std::endl;
 		std::cout << std::endl;
 	}
 }
-
-
 
 
 int		num_of_digits(char *str)

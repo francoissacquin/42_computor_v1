@@ -4,7 +4,6 @@
 #include "../includes/computor.h"
 #include <map>
 #include <iomanip>
-#include <tgmath.h>
 
 class Polynomial_solver
 {

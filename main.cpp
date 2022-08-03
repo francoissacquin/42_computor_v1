@@ -70,6 +70,7 @@ int			equation_solver(t_poly_list * eq)
 
 	resolver.print_reduced_form();
 	resolver.print_polynomial_degree();
+	std::cout << std::endl;
 	if (resolver.get_degree() > 2)
 		return (7);
 	else if (resolver.get_degree() == 0)
@@ -83,6 +84,7 @@ int			equation_solver(t_poly_list * eq)
 		return (0);
 	}
 	resolver.calc_discriminant();
+	std::cout << std::endl;
 	resolver.find_solutions();
 	return (0);
 }
@@ -101,7 +103,7 @@ int			main(int argc, char **argv)
 	int				err;
 	t_poly_list		*temp;
 
-
+	std::cout << std::endl;
 	if (argc != 2)
 		error_exit(1, NULL);
 	std::string		raw_eq(argv[1]);
